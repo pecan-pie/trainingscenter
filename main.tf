@@ -1,6 +1,5 @@
 variable "do_token" {
   type    = "string"
-  default = "123456"
 }
 
 /*
@@ -20,14 +19,14 @@ variable "acme_mail" {
 }
 
 /*
-    initialize do provider
+    initialize digitalocean provider
 */
 provider "digitalocean" {
   token = "${var.do_token}"
 }
 
 /*
-    create the kuberntes cluster on digitalocean
+    create the kubernetes cluster on digitalocean
 */
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
@@ -167,13 +166,8 @@ resource "helm_release" "jenkins" {
   }
 }
 
-output "kubeconfig" {
-  value = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
-}
-
-output "todo" {
-  value = <<EOF
-    terraform output kubeconfig > trainingscenter.kubeconfig
-    export KUBECONFIG=trainingscenter.kubeconfig
-    EOF
+resource "local_file" "kube_config" {
+    content     = "${digitalocean_kubernetes_cluster.dev.kube_config.0.raw_config}"
+    filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.dev.name}.yaml"
+    # TODO: Append this file to KUBECONFIG environment variable?
 }
