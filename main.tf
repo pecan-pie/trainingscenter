@@ -24,7 +24,7 @@ provider "digitalocean" {
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "nyc1"
-  version = "1.13.5-do.0"
+  version = "1.13.5-do.1"
 
   node_pool {
     name       = "low_end"
