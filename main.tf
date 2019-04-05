@@ -1,6 +1,5 @@
 variable "do_token" {
   type    = "string"
-  default = "123456"
 }
 
 /*
@@ -8,26 +7,25 @@ variable "do_token" {
 */
 variable "domain" {
   type    = "string"
-  default = "test.aidun.de"
 }
 
 /*
-    initialize do provider
+    initialize digitalocean provider
 */
 provider "digitalocean" {
   token = "${var.do_token}"
 }
 
 /*
-    create the kuberntes cluster on digitalocean
+    create the kubernetes cluster on digitalocean
 */
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
-  region  = "nyc1"
+  region  = "fra1"
   version = "1.13.5-do.0"
 
   node_pool {
-    name       = "low_end"
+    name       = "worker-pool"
     size       = "s-1vcpu-2gb"
     node_count = 1
   }
@@ -122,7 +120,7 @@ provider "helm" {
 
 resource "helm_release" "traefik" {
   name  = "traefik"
-  chart = "stable/traefkik"
+  chart = "stable/traefik"
 
   values = [
     "${file("traefik.values.yaml")}",
@@ -131,13 +129,8 @@ resource "helm_release" "traefik" {
   depends_on = ["kubernetes_cluster_role_binding.tiller"]
 }
 
-output "kubeconfig" {
-  value = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
-}
-
-output "todo" {
-  value = <<EOF
-    terraform output kubeconfig > trainingscenter.kubeconfig
-    export KUBECONFIG=trainingscenter.kubeconfig
-    EOF
+resource "local_file" "kube_config" {
+    content     = "${digitalocean_kubernetes_cluster.dev.kube_config.0.raw_config}"
+    filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.dev.name}.yaml"
+    # TODO: Append this file to KUBECONFIG environment variable?
 }
