@@ -12,6 +12,14 @@ variable "domain" {
 }
 
 /*
+    domain wich is used for the cluster
+*/
+variable "acme_mail" {
+  type    = "string"
+  default = "info@${domain}"
+}
+
+/*
     initialize do provider
 */
 provider "digitalocean" {
@@ -23,12 +31,12 @@ provider "digitalocean" {
 */
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
-  region  = "nyc1"
+  region  = "fra1"
   version = "1.13.5-do.1"
 
   node_pool {
     name       = "low_end"
-    size       = "s-1vcpu-2gb"
+    size       = "s-2vcpu-2gb"
     node_count = 1
   }
 }
@@ -116,6 +124,13 @@ provider "helm" {
   install_tiller  = true
 }
 
+resource "local_file" "traefik_values_yaml" {
+  filename = "traefik.values.yaml"
+  content = templatefile("${path.module}/templates/traefik.values.yaml",{acme_mail = "markush1986@gmail.com" domain = "${domain}"})
+}
+
+
+
 resource "helm_release" "traefik" {
   name  = "traefik"
   chart = "stable/traefkik"
@@ -124,7 +139,7 @@ resource "helm_release" "traefik" {
     "${file("traefik.values.yaml")}",
   ]
 
-  depends_on = ["kubernetes_cluster_role_binding.tiller"]
+  depends_on = ["kubernetes_cluster_role_binding.tiller", "local_file.traefik_values_yaml"]
 }
 
 output "kubeconfig" {
