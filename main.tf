@@ -8,7 +8,7 @@ variable "do_token" {
 */
 variable "domain" {
   type    = "string"
-  default = "test.aidun.de"
+  default = "example.com"
 }
 
 /*
@@ -16,7 +16,7 @@ variable "domain" {
 */
 variable "acme_mail" {
   type    = "string"
-  default = "info@${domain}"
+  default = "info@example.com"
 }
 
 /*
@@ -33,11 +33,12 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "fra1"
   version = "1.13.5-do.1"
+  tags    = ["staging"]
 
   node_pool {
-    name       = "low_end"
+    name       = "worker-pool"
     size       = "s-2vcpu-2gb"
-    node_count = 1
+    node_count = 3
   }
 }
 
@@ -124,22 +125,26 @@ provider "helm" {
   install_tiller  = true
 }
 
-resource "local_file" "traefik_values_yaml" {
-  filename = "traefik.values.yaml"
-  content = templatefile("${path.module}/templates/traefik.values.yaml",{acme_mail = "markush1986@gmail.com" domain = "${domain}"})
-}
-
-
-
 resource "helm_release" "traefik" {
   name  = "traefik"
-  chart = "stable/traefkik"
+  chart = "stable/traefik"
 
-  values = [
-    "${file("traefik.values.yaml")}",
-  ]
+  set {
+    name  = "serviceType"
+    value = "LoadBalancer"
+  }
 
-  depends_on = ["kubernetes_cluster_role_binding.tiller", "local_file.traefik_values_yaml"]
+  set {
+    name  = "dashboard.enabled"
+    value = "true"
+  }
+
+  set {
+    name  = "dashboard.domain"
+    value = "traefik.${var.domain}"
+  }
+
+  depends_on = ["kubernetes_cluster_role_binding.tiller"]
 }
 
 output "kubeconfig" {
