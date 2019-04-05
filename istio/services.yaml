@@ -1,0 +1,17 @@
+kind: VirtualService
+metadata:
+  name:
+spec:
+  hosts:
+    - "*"
+  gateways:
+    - http-gateway # 1
+  http:
+    - match:
+        - uri:
+            prefix: /
+      route:
+        - destination:
+            host: sa-frontend # 2
+            port:
+              number: 80
