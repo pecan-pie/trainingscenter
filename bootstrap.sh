@@ -12,6 +12,7 @@ export KUBECONFIG=$(pwd)/trainingscenter.kubeconfig
 #
 # Networking
 # HINT: helm template ....
+kubectl create ns istio-system
 kubectl apply -f istio/istio-init.yaml
 kubectl apply -f istio/istio.yaml
 
