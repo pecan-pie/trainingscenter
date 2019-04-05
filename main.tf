@@ -106,14 +106,10 @@ provider "helm" {
   kubernetes {
     host = "${digitalocean_kubernetes_cluster.trainingscenter.endpoint}"
 
-    client_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
-    client_key         = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_key)}"
-
-    //BUG: we have to disable ca checks until the next helm provider release
-    //  cluster_ca_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.cluster_ca_certificate)}"
-
-    //BUG: option is not used in current helm provider release
-    load_config_file = false
+    client_certificate     = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
+    client_key             = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_key)}"
+    cluster_ca_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.cluster_ca_certificate)}"
+    load_config_file       = false
   }
 
   service_account = "tiller"
