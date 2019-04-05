@@ -3,6 +3,9 @@ variable "do_token" {
   default = "123456"
 }
 
+/*
+    domain wich is used for the cluster
+*/
 variable "domain" {
   type    = "string"
   default = "test.aidun.de"
@@ -13,18 +16,6 @@ variable "domain" {
 */
 provider "digitalocean" {
   token = "${var.do_token}"
-}
-
-/*
- initialize the kuberntes provider for inititial setups
-*/
-provider "kubernetes" {
-  host = "${digitalocean_kubernetes_cluster.trainingscenter.endpoint}"
-
-  client_certificate     = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
-  client_key             = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_key)}"
-  cluster_ca_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.cluster_ca_certificate)}"
-  load_config_file       = false
 }
 
 /*
@@ -40,6 +31,21 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
     size       = "s-1vcpu-2gb"
     node_count = 1
   }
+}
+
+/*
+ initialize the kuberntes provider for inititial setups
+*/
+provider "kubernetes" {
+  // don´t use a local kubeconfig
+  load_config_file = false
+
+  // use a custom configuration, so we have no trouble with existing configurations
+  host = "${digitalocean_kubernetes_cluster.trainingscenter.endpoint}"
+
+  client_certificate     = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
+  client_key             = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_key)}"
+  cluster_ca_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.cluster_ca_certificate)}"
 }
 
 /*
@@ -103,8 +109,10 @@ provider "helm" {
     client_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
     client_key         = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_key)}"
 
+    //BUG: we have to disable ca checks until the next helm provider release
     //  cluster_ca_certificate = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.cluster_ca_certificate)}"
 
+    //BUG: option is not used in current helm provider release
     load_config_file = false
   }
 
