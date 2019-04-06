@@ -10,6 +10,16 @@ variable "domain" {
   default = "example.com"
 }
 
+variable "jenkins_subdomain" {
+  type    = "string"
+  default = "jenkins"
+}
+
+variable "traefik_subdomain" {
+  type    = "string"
+  default = "traefik"
+}
+
 /*
     domain wich is used for the cluster
 */
@@ -48,14 +58,14 @@ resource "digitalocean_domain" "default" {
 resource "digitalocean_record" "traefik" {
   domain = "${digitalocean_domain.default.name}"
   type   = "A"
-  name   = "traefik"
+  name   = "${var.traefik_subdomain}"
   value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
 }
 
 resource "digitalocean_record" "jenkins" {
   domain = "${digitalocean_domain.default.name}"
   type   = "A"
-  name   = "jenkins"
+  name   = "${var.jenkins_subdomain}"
   value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
 }
 
