@@ -32,19 +32,31 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "fra1"
   version = "1.13.5-do.0"
+  tags    = ["staging"]
 
   node_pool {
     name       = "worker-pool"
-    size       = "s-1vcpu-2gb"
-    node_count = 1
+    size       = "s-2vcpu-2gb"
+    node_count = 3
   }
 }
 
+resource "digitalocean_domain" "default" {
+  name       = "${var.domain}"
+}
+
+# resource "digitalocean_record" "www" {
+#   domain = "${digitalocean_domain.default.name}"
+#   type   = "A"
+#   name   = "www"
+#   value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
+# }
+
 /*
- initialize the kuberntes provider for inititial setups
+ initialize the Kubernetes provider for inititial setups
 */
 provider "kubernetes" {
-  // don´t use a local kubeconfig
+  // don't use a local kubeconfig
   load_config_file = false
 
   // use a custom configuration, so we have no trouble with existing configurations
@@ -129,7 +141,7 @@ resource "helm_release" "traefik" {
 
   set {
     name  = "serviceType"
-    value = "LoadBalancer"
+    value = "NodePort"
   }
 
   set {
@@ -166,7 +178,7 @@ resource "helm_release" "jenkins" {
 }
 
 resource "local_file" "kube_config" {
-    content     = "${digitalocean_kubernetes_cluster.dev.kube_config.0.raw_config}"
-    filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.dev.name}.yaml"
+    content     = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
+    filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
     # TODO: Append this file to KUBECONFIG environment variable?
 }
