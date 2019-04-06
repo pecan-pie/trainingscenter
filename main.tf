@@ -37,7 +37,7 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
 
   node_pool {
     name       = "worker-pool"
-    size       = "s-2vcpu-2gb"
+    size       = "s-4vcpu-8gb"
     node_count = 3
   }
 }
@@ -125,13 +125,7 @@ provider "helm" {
   install_tiller  = true
 }
 
-output "kubeconfig" {
-  value = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
-}
-
-output "todo" {
-  value = <<EOF
-    terraform output kubeconfig > trainingscenter.kubeconfig
-    export KUBECONFIG=trainingscenter.kubeconfig
-    EOF
+resource "local_file" "kube_config" {
+  content  = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
+  filename = "${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
 }

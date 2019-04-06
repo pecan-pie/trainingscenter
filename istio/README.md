@@ -5,3 +5,11 @@ helm template ../istio/install/kubernetes/helm/istio --name istio --set global.m
 kubectl apply -f istio-init.yaml
 kubectl apply -f istio.yaml
 kubectl label namespace default istio-injection=enabled
+
+# URLS
+
+Nach der Installtion:
+
+sudo kube-fwd -n istio-system
+
+http://kiali:20001/kiali
