@@ -152,7 +152,7 @@ resource "helm_release" "traefik" {
 
   set {
     name  = "serviceType"
-    value = "NodePort"
+    value = "LoadBalancer"
   }
 
   set {
