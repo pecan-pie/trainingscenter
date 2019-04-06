@@ -7,7 +7,6 @@ variable "do_token" {
 */
 variable "domain" {
   type    = "string"
-<<<<<<< HEAD
   default = "example.com"
 }
 
@@ -20,11 +19,6 @@ variable "acme_mail" {
 }
 
 /*
-=======
-}
-
-/*
->>>>>>> 201054eda5e35b19db317c7a915f6d6d950cfe5b
     initialize digitalocean provider
 */
 provider "digitalocean" {
@@ -42,13 +36,8 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
 
   node_pool {
     name       = "worker-pool"
-<<<<<<< HEAD
     size       = "s-2vcpu-2gb"
     node_count = 3
-=======
-    size       = "s-1vcpu-2gb"
-    node_count = 1
->>>>>>> 201054eda5e35b19db317c7a915f6d6d950cfe5b
   }
 }
 
@@ -56,12 +45,19 @@ resource "digitalocean_domain" "default" {
   name       = "${var.domain}"
 }
 
-# resource "digitalocean_record" "www" {
-#   domain = "${digitalocean_domain.default.name}"
-#   type   = "A"
-#   name   = "www"
-#   value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
-# }
+resource "digitalocean_record" "traefik" {
+  domain = "${digitalocean_domain.default.name}"
+  type   = "A"
+  name   = "traefik"
+  value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
+}
+
+resource "digitalocean_record" "jenkins" {
+  domain = "${digitalocean_domain.default.name}"
+  type   = "A"
+  name   = "jenkins"
+  value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
+}
 
 /*
  initialize the Kubernetes provider for inititial setups
@@ -152,7 +148,7 @@ resource "helm_release" "traefik" {
 
   set {
     name  = "serviceType"
-    value = "LoadBalancer"
+    value = "NodePort"
   }
 
   set {
