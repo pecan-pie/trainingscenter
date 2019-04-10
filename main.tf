@@ -1,6 +1,5 @@
 variable "do_token" {
-  type    = "string"
-  default = "123456"
+  type = "string"
 }
 
 /*
@@ -20,14 +19,14 @@ variable "acme_mail" {
 }
 
 /*
-    initialize do provider
+    initialize digitalocean provider
 */
 provider "digitalocean" {
   token = "${var.do_token}"
 }
 
 /*
-    create the kuberntes cluster on digitalocean
+    create the kubernetes cluster on digitalocean
 */
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
@@ -37,16 +36,27 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
 
   node_pool {
     name       = "worker-pool"
-    size       = "s-2vcpu-2gb"
+    size       = "s-4vcpu-8gb"
     node_count = 3
   }
 }
 
+resource "digitalocean_domain" "default" {
+  name = "${var.domain}"
+}
+
+resource "digitalocean_record" "traefik" {
+  domain = "${digitalocean_domain.default.name}"
+  type   = "A"
+  name   = "*"
+  value  = "${kubernetes_service.trainingscenter.load_balancer_ingress.0.ip}"
+}
+
 /*
- initialize the kuberntes provider for inititial setups
+ initialize the Kubernetes provider for inititial setups
 */
 provider "kubernetes" {
-  // don´t use a local kubeconfig
+  // don't use a local kubeconfig
   load_config_file = false
 
   // use a custom configuration, so we have no trouble with existing configurations
@@ -131,7 +141,7 @@ resource "helm_release" "traefik" {
 
   set {
     name  = "serviceType"
-    value = "LoadBalancer"
+    value = "NodePort"
   }
 
   set {
@@ -167,13 +177,9 @@ resource "helm_release" "jenkins" {
   }
 }
 
-output "kubeconfig" {
-  value = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
-}
+resource "local_file" "kube_config" {
+  content  = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
+  filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
 
-output "todo" {
-  value = <<EOF
-    terraform output kubeconfig > trainingscenter.kubeconfig
-    export KUBECONFIG=trainingscenter.kubeconfig
-    EOF
+  # TODO: Append this file to KUBECONFIG environment variable?
 }
