@@ -1,7 +1,8 @@
 # Requirements
-## Must
+## Mandatory
 * kubectl
 * terraform
+* helm
 * linkerd
 ## Optional
 * kubefwd
