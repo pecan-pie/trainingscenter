@@ -7,7 +7,6 @@ variable "do_token" {
 */
 variable "domain" {
   type    = "string"
-  default = "example.com"
 }
 
 /*
@@ -15,5 +14,4 @@ variable "domain" {
 */
 variable "acme_mail" {
   type    = "string"
-  default = "info@example.com"
-}
+ }
