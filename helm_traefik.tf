@@ -1,7 +1,15 @@
 resource "helm_release" "traefik" {
-  name   = "traefik"
-  chart  = "stable/traefik"
-  values = ["${file("traefik-values.yml")}"]
+  name  = "traefik"
+  chart = "stable/traefik"
+
+  values = ["${file("traefik-values.yml")}",
+    <<-EOF
+service:
+  annotations:
+    "external-dns.alpha.kubernetes.io/hostname": "*.${var.domain}"
+  EOF
+    ,
+  ]
 
   set {
     name  = "dashboard.domain"
