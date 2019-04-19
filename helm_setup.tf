@@ -65,4 +65,3 @@ provider "helm" {
   service_account = "tiller"
   install_tiller  = true
 }
-

@@ -1,4 +1,4 @@
-serviceType: ClusterIP
+serviceType: LoadBalancer
 externalTrafficPolicy: ""
 
 dashboard:
