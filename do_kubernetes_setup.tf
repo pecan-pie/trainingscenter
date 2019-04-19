@@ -9,7 +9,7 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
 
   node_pool {
     name       = "worker-pool"
-    size       = "s-4vcpu-8gb"
+    size       = "s-2vcpu-4gb"
     node_count = 3
   }
 }
@@ -19,9 +19,8 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
 */
 provider "kubernetes" {
   // don't use a local kubeconfig
-  load_config_file = false
-
   // use a custom configuration, so we have no trouble with existing configurations
+  load_config_file = false
   host = "${digitalocean_kubernetes_cluster.trainingscenter.endpoint}"
 
   client_certificate     = "${base64decode(digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.client_certificate)}"
@@ -32,6 +31,4 @@ provider "kubernetes" {
 resource "local_file" "kube_config" {
   content  = "${digitalocean_kubernetes_cluster.trainingscenter.kube_config.0.raw_config}"
   filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
-
-  # TODO: Append this file to KUBECONFIG environment variable?
 }
