@@ -20,3 +20,7 @@ acme:
 
 debug: 
   enabled: true
+
+kubernetes:
+  ingressEndpoint:
+    useDefaultPublishedService: true
