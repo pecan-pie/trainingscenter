@@ -1,19 +1,13 @@
 resource "helm_release" "jenkins" {
   name  = "jenkins"
   chart = "stable/jenkins"
+  
+  values = ["${file("jenkins-values.yml")}"]
 
   set {
-    name  = "Master.ServiceType"
-    value = "ClusterIP"
-  }
-
-  set {
-    name  = "Master.ingress.enabled"
-    value = "true"
-  }
-
-  set {
-    name  = "Master.ingress.hostName"
+    name  = "master.ingress.hostName"
     value = "jenkins.${var.domain}"
   }
+
+  depends_on = ["kubernetes_cluster_role_binding.tiller", "kubernetes_service_account.tiller"]
 }
