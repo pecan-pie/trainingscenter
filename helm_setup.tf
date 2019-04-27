@@ -46,7 +46,8 @@ resource "kubernetes_cluster_role_binding" "tiller" {
     api_group = "rbac.authorization.k8s.io"
   }
 
-  depends_on = ["digitalocean_kubernetes_cluster.trainingscenter"]
+  # Ensure that config is existent upon creation and destruction of cluster
+  depends_on = ["local_file.kube_config"]
 }
 
 /*
