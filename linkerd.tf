@@ -3,7 +3,14 @@ resource "null_resource" "linkerd" {
     command = "linkerd install --proxy-auto-inject | kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml apply -f -"
   }
 
-  # helm_release.traefik becouse traefik should not be part of the service mesh
-  # maybe we can add it, but you have to remember it always: https://linkerd.io/2/tasks/using-ingress/#traefik
-  depends_on = ["digitalocean_kubernetes_cluster.trainingscenter", "helm_release.traefik"]
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml annotate namespace default linkerd.io/inject=enabled --overwrite"
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml wait --for=condition=Ready pods --all --namespace linkerd --timeout=240s"
+  }
+
+  # Ensure that config is existent upon installation of linkerd
+  depends_on = ["local_file.kube_config"]
 }
