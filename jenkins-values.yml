@@ -1,0 +1,7 @@
+master:
+  serviceType: ClusterIP
+  ingress:
+    enabled: true
+
+persistence:
+  enabled: false

@@ -2,7 +2,7 @@ serviceType: LoadBalancer
 externalTrafficPolicy: ""
 
 dashboard:
-  enabled: true"
+  enabled: true
 
 ssl:
   enabled: true
@@ -11,15 +11,17 @@ ssl:
   # ref: https://github.com/helm/charts/issues/889#issuecomment-291917890
 acme:
   enabled: true
-  staging: false
+  persistence:
+    enabled: false
+  staging: true
   # challengeType: tls-alpn-01
   # delayBeforeCheck: 60
   challengeType: dns-01 
   dnsProvider:
     name: digitalocean
 
-debug: 
-  enabled: true
+# debug: 
+#   enabled: true
 
 kubernetes:
   ingressEndpoint:

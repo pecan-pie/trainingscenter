@@ -19,5 +19,5 @@ resource "helm_release" "traefik" {
     value = "${var.do_token}"
   }
 
-  depends_on = ["kubernetes_cluster_role_binding.tiller"]
+  depends_on = ["kubernetes_cluster_role_binding.tiller", "kubernetes_service_account.tiller"]
 }
