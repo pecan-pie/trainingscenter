@@ -6,6 +6,8 @@ resource "kubernetes_service_account" "tiller" {
     name      = "tiller"
     namespace = "kube-system"
   }
+
+  depends_on = ["local_file.kube_config", "null_resource.linkerd"]
 }
 
 /*
@@ -47,7 +49,7 @@ resource "kubernetes_cluster_role_binding" "tiller" {
   }
 
   # Ensure that config is existent upon creation and destruction of cluster
-  depends_on = ["local_file.kube_config"]
+  depends_on = ["local_file.kube_config", "null_resource.linkerd"]
 }
 
 /*
