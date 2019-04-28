@@ -26,3 +26,8 @@ acme:
 kubernetes:
   ingressEndpoint:
     useDefaultPublishedService: true
+
+# ref: https://linkerd.io/2/tasks/using-ingress/#traefik
+deployment:
+  podAnnotations:
+    linkerd.io/inject: disabled
