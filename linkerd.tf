@@ -4,7 +4,7 @@ resource "null_resource" "linkerd" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl annotate namespace default linkerd.io/inject=enabled --overwrite"
+    command = "kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml annotate namespace default linkerd.io/inject=enabled --overwrite"
   }
 
   provisioner "local-exec" {
