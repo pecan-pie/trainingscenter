@@ -1,6 +1,6 @@
 resource "null_resource" "linkerd" {
   provisioner "local-exec" {
-    command = "linkerd install --proxy-auto-inject | kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml apply -f -"
+    command = "linkerd install --proxy-auto-inject --kubeconfig contexts/kube-cluster-trainingscenter.yaml | kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml apply -f -"
   }
 
   provisioner "local-exec" {
