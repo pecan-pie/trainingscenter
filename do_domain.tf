@@ -1,3 +1,4 @@
 resource "digitalocean_domain" "default" {
-  name = "${var.domain}"
+  name = var.domain
 }
+

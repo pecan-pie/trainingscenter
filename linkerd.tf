@@ -12,5 +12,6 @@ resource "null_resource" "linkerd" {
   }
 
   # Ensure that config is existent upon installation of linkerd
-  depends_on = ["local_file.kube_config"]
+  depends_on = [local_file.kube_config]
 }
+

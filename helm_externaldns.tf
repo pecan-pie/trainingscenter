@@ -5,7 +5,7 @@ resource "helm_release" "external-dns" {
 
   set {
     name  = "digitalocean.apiToken"
-    value = "${var.do_token}"
+    value = var.do_token
   }
 
   set {
@@ -18,5 +18,6 @@ resource "helm_release" "external-dns" {
     value = "ingress"
   }
 
-  depends_on = ["kubernetes_cluster_role_binding.tiller"]
+  depends_on = [kubernetes_cluster_role_binding.tiller]
 }
+
