@@ -3,31 +3,42 @@ externalTrafficPolicy: ""
 
 dashboard:
   enabled: true
+  # accessLogs: 
+  #   enabled: true
+  ingress:
+    annotations:
+      ingress.kubernetes.io/custom-request-headers: l5d-dst-override:traefik-dashboard.default.svc.cluster.local:80  
+      external-dns.alpha.kubernetes.io/ttl: 60
 
 ssl:
   enabled: true
   enforced: true
 
-  # ref: https://github.com/helm/charts/issues/889#issuecomment-291917890
+# ref: https://github.com/helm/charts/issues/889#issuecomment-291917890
 acme:
   enabled: true
   persistence:
     enabled: false
   staging: true
-  # challengeType: tls-alpn-01
-  # delayBeforeCheck: 60
+  delayBeforeCheck: 30
   challengeType: dns-01 
   dnsProvider:
     name: digitalocean
 
-# debug: 
-#   enabled: true
-
 kubernetes:
+  namespaces:
+  - default
+  - openfaas
   ingressEndpoint:
     useDefaultPublishedService: true
 
+rbac:
+  enabled: true
+
 # ref: https://linkerd.io/2/tasks/using-ingress/#traefik
-deployment:
-  podAnnotations:
-    linkerd.io/inject: disabled
+# deployment:
+#   podAnnotations:
+#     linkerd.io/inject: disabled
+
+# debug: 
+#   enabled: true

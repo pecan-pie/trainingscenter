@@ -1,0 +1,18 @@
+exposeServices: false
+functionNamespace: openfaas-fn
+
+operator:
+  create: true
+
+ingress:
+  enabled: true
+  hosts:
+    - host: gateway.openfaas.local  # This value will be replaced by the Terraform module.
+      serviceName: gateway
+      servicePort: 8080
+      path: /
+  annotations:
+    # Setting the ingress.class explicitly as the chart will add nginx by default
+    kubernetes.io/ingress.class: traefik
+    ingress.kubernetes.io/custom-request-headers: l5d-dst-override:gateway.default.svc.cluster.local:8080
+    external-dns.alpha.kubernetes.io/ttl: 60
