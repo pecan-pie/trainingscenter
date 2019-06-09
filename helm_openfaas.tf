@@ -11,9 +11,17 @@ resource "null_resource" "openfaas_namespaces" {
   }
 
   provisioner "local-exec" {
-    command = "kubectl -n default create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password=\"$(head -c 12 /dev/urandom | shasum| cut -d' ' -f1)\" --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
+    command = "kubectl -n openfaas create secret generic basic-auth --from-literal=basic-auth-user=admin --from-literal=basic-auth-password=\"$(head -c 12 /dev/urandom | shasum| cut -d' ' -f1)\" --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
   }
 
+  provisioner "local-exec" {
+    command = "kubectl annotate namespace openfaas \"linkerd.io/inject=enabled\" --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
+  }
+
+  provisioner "local-exec" {
+    command = "kubectl annotate namespace openfaas-fn \"linkerd.io/inject=enabled\" --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
+  }
+  
   depends_on = [null_resource.linkerd]
 }
 
@@ -22,7 +30,7 @@ resource "helm_release" "openfaas" {
   name       = "openfaas"
   repository = data.helm_repository.openfaas_repository.metadata[0].name
   chart      = "openfaas"
-  namespace  = "default"
+  namespace  = "openfaas"
 
   values = [file("openfaas-values.yml")]
 
