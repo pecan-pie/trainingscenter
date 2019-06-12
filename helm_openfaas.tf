@@ -32,7 +32,7 @@ resource "helm_release" "openfaas" {
   chart      = "openfaas"
   namespace  = "openfaas"
 
-  values = [file("openfaas-values.yml")]
+  values = [file("values-openfaas.yml")]
 
   set {
     name  = "ingress.hosts[0].host"
