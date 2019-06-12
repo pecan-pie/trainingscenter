@@ -1,11 +1,16 @@
-# Requirements
+# Trainingscenter
+
+# Get Started 
+
+
+## Requirements
 
 * kubectl
 * terraform
 * helm
 * linkerd
-
-# Setup
+  
+## Run it
 
 ```
 export DIGITAL_OCEAN_TOKEN=<retrieve-digital-ocean-token>
@@ -21,3 +26,13 @@ kubectl get all --all-namespaces
 # Connect to Linkerd dashboard
 linkerd dashboard &
 ```
+
+## Reference guide
+
+| Option        | Usage                 |
+| ------------- |:---------------------:|
+| do_token      |                       |
+| domain        |                       |
+| acme_mail     |                       |
+
+# Contributing
