@@ -11,7 +11,6 @@ resource "null_resource" "linkerd" {
     command = "kubectl --kubeconfig contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml wait --for=condition=Ready pods --all --namespace linkerd --timeout=360s"
   }
 
-  # Ensure that config is existent upon installation of linkerd
   depends_on = [local_file.kube_config]
 }
 
