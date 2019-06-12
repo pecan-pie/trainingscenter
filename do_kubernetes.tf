@@ -1,10 +1,7 @@
-/*
-    create the kubernetes cluster on digitalocean
-*/
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "fra1"
-  version = "1.13.5-do.1"
+  version = "1.14.1-do.4"
   tags    = ["staging"]
 
   node_pool {
@@ -14,12 +11,13 @@ resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   }
 }
 
-/*
- initialize the Kubernetes provider for inititial setups
-*/
+resource "local_file" "kube_config" {
+  content  = digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].raw_config
+  filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
+}
+
 provider "kubernetes" {
-  // don't use a local kubeconfig
-  // use a custom configuration, so we have no trouble with existing configurations
+  // Don't load existing config files. We use a separate config file just for this cluster.
   load_config_file = false
   host             = digitalocean_kubernetes_cluster.trainingscenter.endpoint
 
@@ -35,9 +33,3 @@ provider "kubernetes" {
     digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].cluster_ca_certificate,
   )
 }
-
-resource "local_file" "kube_config" {
-  content  = digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].raw_config
-  filename = "contexts/kube-cluster-${digitalocean_kubernetes_cluster.trainingscenter.name}.yaml"
-}
-
