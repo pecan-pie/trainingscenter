@@ -1,7 +1,8 @@
 # Trainingscenter
 
-# Get Started 
+This repository contains the resources for the Trainingscenter project. Purpose of this project is giving developers a way of learning to work with Kubernetes and applications running on the platform. The infrastructure setup through the sources in this project provisions a Kubernetes cluster on DigitalOcean with Linkerd, ExternalDNS and Traefik running on it. These tools are a sensible baseline for developers to get started working on Kubernetes.   
 
+# Get Started 
 
 ## Requirements
 
