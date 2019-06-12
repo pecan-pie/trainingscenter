@@ -2,7 +2,7 @@ resource "helm_release" "traefik" {
   name  = "traefik"
   chart = "stable/traefik"
 
-  values = [file("traefik-values.yml")]
+  values = [file("values-traefik.yml")]
 
   set {
     name  = "dashboard.domain"
