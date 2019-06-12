@@ -1,21 +1,21 @@
 # Requirements
-## Mandatory
+
 * kubectl
 * terraform
 * helm
 * linkerd
-## Optional
-* kubefwd
-* kube-prompt
 
 # Setup
-```
-terraform init
-terraform apply
 
+```
 export KUBECONFIG=contexts/kube-cluster-trainingscenter.yaml
 
+terraform init
+terraform apply -var do_token=${DIGITAL_OCEAN_PERSONAL_ACCESS_TOKENS} -var acme_mail=recipient@sample.com -var domain=sample.com
+
+# List all created resources
 kubectl get all --all-namespaces
 
+# Connect to Linkerd dashboard
 linkerd dashboard &
 ```
