@@ -18,6 +18,11 @@ resource "helm_release" "external-dns" {
     value = "ingress"
   }
 
+  set {
+    name  = "rbac.create"
+    value = "true"
+  }
+
   depends_on = [kubernetes_cluster_role_binding.tiller]
 }
 
