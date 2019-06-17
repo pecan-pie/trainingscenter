@@ -1,7 +1,7 @@
 resource "helm_release" "external-dns" {
   name    = "external-dns"
   chart   = "stable/external-dns"
-  version = "1.7.8"
+  version = "1.7.9"
 
   set {
     name  = "digitalocean.apiToken"
