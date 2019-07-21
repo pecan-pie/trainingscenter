@@ -1,6 +1,7 @@
 resource "helm_release" "traefik" {
   name  = "traefik"
   chart = "stable/traefik"
+  version = "1.68.5"
 
   values = [file("values-traefik.yml")]
 
