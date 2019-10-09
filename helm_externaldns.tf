@@ -1,7 +1,7 @@
 resource "helm_release" "external-dns" {
   name    = "external-dns"
   chart   = "stable/external-dns"
-  version = "1.7.8"
+  version = "1.7.9"
 
   set {
     name  = "digitalocean.apiToken"
@@ -16,6 +16,11 @@ resource "helm_release" "external-dns" {
   set {
     name  = "source"
     value = "ingress"
+  }
+
+  set {
+    name  = "rbac.create"
+    value = "true"
   }
 
   depends_on = [kubernetes_cluster_role_binding.tiller]

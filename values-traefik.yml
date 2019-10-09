@@ -3,8 +3,6 @@ externalTrafficPolicy: ""
 
 dashboard:
   enabled: true
-  # accessLogs: 
-  #   enabled: true
   ingress:
     annotations:
       ingress.kubernetes.io/custom-request-headers: l5d-dst-override:traefik-dashboard.default.svc.cluster.local:80  
@@ -34,11 +32,3 @@ kubernetes:
 
 rbac:
   enabled: true
-
-# ref: https://linkerd.io/2/tasks/using-ingress/#traefik
-# deployment:
-#   podAnnotations:
-#     linkerd.io/inject: disabled
-
-# debug: 
-#   enabled: true

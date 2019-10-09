@@ -1,10 +1,7 @@
-/*
-    create a serviceaccount for helm / tiller
-*/
 resource "kubernetes_service_account" "tiller" {
   metadata {
     name      = "tiller"
-    namespace = "kube-system"
+    namespace = "default"
   }
 
   depends_on = [
@@ -30,37 +27,16 @@ resource "kubernetes_cluster_role_binding" "tiller" {
   subject {
     kind      = "ServiceAccount"
     name      = "tiller"
-    namespace = "kube-system"
+    namespace = "default"
   }
 
-  subject {
-    kind      = "User"
-    name      = "admin"
-    api_group = "rbac.authorization.k8s.io"
-  }
-
-  subject {
-    kind      = "Group"
-    name      = "system:serviceaccounts"
-    api_group = "rbac.authorization.k8s.io"
-  }
-
-  subject {
-    kind      = "User"
-    name      = "kubelet"
-    api_group = "rbac.authorization.k8s.io"
-  }
-
-  # Ensure that config is existent upon creation and destruction of cluster
+  # Ensure that config is existent upon creation and destruction of cluster.
   depends_on = [
     local_file.kube_config,
     null_resource.linkerd,
   ]
 }
 
-/*
-    helm provider config
-*/
 provider "helm" {
   kubernetes {
     host = digitalocean_kubernetes_cluster.trainingscenter.endpoint
@@ -76,10 +52,12 @@ provider "helm" {
     cluster_ca_certificate = base64decode(
       digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].cluster_ca_certificate,
     )
+
     load_config_file = false
   }
 
   service_account = "tiller"
+  namespace       = "default"
   install_tiller  = true
 }
 
