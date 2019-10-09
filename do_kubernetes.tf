@@ -1,11 +1,7 @@
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "fra1"
-<<<<<<< HEAD
   version = "1.15.4-do.0"
-=======
-  version = "1.15.3-do.3"
->>>>>>> Set Cluster Version to 1.15.3
   tags    = ["staging"]
 
   node_pool {
