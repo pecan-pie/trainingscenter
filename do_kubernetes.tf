@@ -1,7 +1,7 @@
 resource "digitalocean_kubernetes_cluster" "trainingscenter" {
   name    = "trainingscenter"
   region  = "fra1"
-  version = "1.14.1-do.4"
+  version = "1.15.4-do.0"
   tags    = ["staging"]
 
   node_pool {
