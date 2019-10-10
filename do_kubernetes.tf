@@ -20,6 +20,7 @@ provider "kubernetes" {
   // Don't load existing config files. We use a separate config file just for this cluster.
   load_config_file = false
   host             = digitalocean_kubernetes_cluster.trainingscenter.endpoint
+  token            = digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].token
 
   client_certificate = base64decode(
     digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].client_certificate,
