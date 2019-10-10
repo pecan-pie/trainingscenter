@@ -39,7 +39,9 @@ resource "kubernetes_cluster_role_binding" "tiller" {
 
 provider "helm" {
   kubernetes {
-    host = digitalocean_kubernetes_cluster.trainingscenter.endpoint
+    host             = digitalocean_kubernetes_cluster.trainingscenter.endpoint
+    load_config_file = false
+    token            = digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].token
 
     client_certificate = base64decode(
       digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].client_certificate,
@@ -52,8 +54,6 @@ provider "helm" {
     cluster_ca_certificate = base64decode(
       digitalocean_kubernetes_cluster.trainingscenter.kube_config[0].cluster_ca_certificate,
     )
-
-    load_config_file = false
   }
 
   service_account = "tiller"
