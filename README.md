@@ -1,6 +1,6 @@
 # Trainingscenter
 
-This repository contains resources for the Trainingscenter project. Purpose of this project is giving developers a quick way of learning to work with Kubernetes and applications running on the platform. The sources in this project provision a Kubernetes cluster on DigitalOcean with Linkerd, ExternalDNS and Traefik running on it. These tools are a sensible baseline for developers to get started working on Kubernetes.   
+This repository contains resources for the Trainingscenter project. Purpose of this project is giving developers a quick way to learn working with Kubernetes and the Infrastructure-as-code part around it. The sources in this project provision a Kubernetes cluster on DigitalOcean with Linkerd, ExternalDNS and Traefik running on it. These tools are a sensible baseline for developers to get started working on Kubernetes.   
 
 # Get Started 
 
@@ -27,7 +27,7 @@ terraform apply -var do_token=${DIGITAL_OCEAN_TOKEN} -var acme_mail=mail@sample.
 
 ## Use It
 
-After setting up the infrastructure on Digital Ocean you can access it via the following commands.
+After setting up the infrastructure on DigitalOcean you can access it via the following commands.
 
 ### via CLI
 
@@ -42,5 +42,5 @@ linkerd dashboard &
 ### via HTTP
 
 The following subdomains will be accesible from outside the cluster:
-* traefik.sample.com
+* `traefik.sample.com`
  
