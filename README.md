@@ -1,10 +1,12 @@
 # Trainingscenter
 
-This repository contains the resources for the Trainingscenter project. Purpose of this project is giving developers a way of learning to work with Kubernetes and applications running on the platform. The sources in this project provision a Kubernetes cluster on DigitalOcean with Linkerd, ExternalDNS and Traefik running on it. These tools are a sensible baseline for developers to get started working on Kubernetes.   
+This repository contains resources for the Trainingscenter project. Purpose of this project is giving developers a quick way of learning to work with Kubernetes and applications running on the platform. The sources in this project provision a Kubernetes cluster on DigitalOcean with Linkerd, ExternalDNS and Traefik running on it. These tools are a sensible baseline for developers to get started working on Kubernetes.   
 
 # Get Started 
 
-## Requirements
+## Prerequisites
+
+Make sure the following command line tools are installed on your machine. All binaries have to be included in the `PATH` variable.
 
 * kubectl
 * terraform
@@ -13,27 +15,32 @@ This repository contains the resources for the Trainingscenter project. Purpose 
   
 ## Run it
 
-```
+```bash
+# Prepare Environment Variables for the installation
 export DIGITAL_OCEAN_TOKEN=<retrieve-digital-ocean-token>
 export KUBECONFIG=contexts/kube-cluster-trainingscenter.yaml
 
 # Run Terraform to create infrastructure
 terraform init
 terraform apply -var do_token=${DIGITAL_OCEAN_TOKEN} -var acme_mail=mail@sample.com -var domain=sample.com
+```
 
-# List all created resources in Kubernetes cluster
+## Use It
+
+After setting up the infrastructure on Digital Ocean you can access it via the following commands.
+
+### via CLI
+
+```bash
+# List all resources in the Kubernetes cluster
 kubectl get all --all-namespaces
 
-# Connect to Linkerd dashboard
+# Connect to the Linkerd dashboard (make sure linkerd binary is available)
 linkerd dashboard &
 ```
 
-## Reference guide
+### via HTTP
 
-| Option        | Usage                 |
-| ------------- |:---------------------:|
-| do_token      |                       |
-| domain        |                       |
-| acme_mail     |                       |
-
-# Contributing
+The following subdomains will be accesible from outside the cluster:
+* traefik.sample.com
+ 
