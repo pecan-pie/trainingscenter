@@ -1,0 +1,9 @@
+config:
+  url: https://argocd.gletscherkun.de
+#  dexConfig:
+#    url: https://argocd.gletscherkun.de
+
+ingress:
+  enabled: false
+#  dexConfig:
+#    url: https://argocd.gletscherkun.de
